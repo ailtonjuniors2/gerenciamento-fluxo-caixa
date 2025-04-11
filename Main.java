@@ -1,8 +1,7 @@
-import model.transacao;
+import view.login;
 
-public class Main{
+public class Main {
     public static void main(String[] args) {
-
-
+        new login(); //
     }
 }
