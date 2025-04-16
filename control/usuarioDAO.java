@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class usuarioDAO {
-    private static final String ARQUIVO = "usuarios.txt";
+    private static final String ARQUIVO = "data/usuarios.txt";
 
     public static void salvarUsuario(usuario user) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(ARQUIVO, true));
@@ -34,17 +34,22 @@ public class usuarioDAO {
         br.close();
         return usuarios;
     }
-    public static boolean verificarUsuarioCadastrado() throws IOException{
-        File arquivo = new File(ARQUIVO);
-
-        if (!arquivo.exists() || arquivo.length() == 0){
-            return false;
+    public static boolean verificarUsuarioCadastrado(String user) throws IOException{
+        List<usuario> usuarios = carregarUsuarios();
+        for (usuario users : usuarios) {
+            if (users.getUsuario().equalsIgnoreCase(user)) {
+                return true;
+            }
         }
-
-        BufferedReader br = new BufferedReader(new FileReader(arquivo));
-        String linha = br.readLine();
-        br.close();
-
-        return linha != null && !linha.isEmpty();
+        return false;
+    }
+    public static boolean verificarLogin(String user, String senha) throws IOException {
+        List<usuario> usuarios = carregarUsuarios();
+        for (usuario users : usuarios) {
+            if (users.getUsuario().equalsIgnoreCase(user) && users.getSenha().equals(senha)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
