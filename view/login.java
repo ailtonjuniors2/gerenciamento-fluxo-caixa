@@ -45,7 +45,8 @@ public class login extends JFrame {
         campoSenha.setBorder(BorderFactory.createTitledBorder("Senha"));
 
         painelcampos.add(campoLogin);
-        painelcampos.add(campoSenha);botaoLogin = new JButton();
+        painelcampos.add(campoSenha);
+
 
 
         botaoLogin = new JButton("Entrar");
