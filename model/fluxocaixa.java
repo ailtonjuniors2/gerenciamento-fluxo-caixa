@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
     public class fluxocaixa{
-    private List<transacao> transacaoList;
+    private static List<transacao> transacaoList = new ArrayList<>();
 
     public fluxocaixa(){
-        this.transacaoList = new ArrayList<>();
+
     }
 
-    public void adicionartransacao(transacao t){
+    public static void adicionartransacao(transacao t){
         transacaoList.add(t);
     }
 
@@ -18,11 +18,16 @@ import java.util.List;
         transacaoList.remove(t);
     }
 
-    public double calcularsaldo(){
+    public static double calcularsaldo(){
+
+        if (transacaoList == null) {
+            return 0.0;
+        }
+
         double saldo = 0.0;
         for (transacao t : transacaoList){
             if(t.getTipo().equalsIgnoreCase("entrada")){
-                saldo+= t.getValor();
+                saldo += t.getValor();
             } else if(t.getTipo().equalsIgnoreCase("saida")){
                 saldo -= t.getValor();
             }
@@ -30,6 +35,9 @@ import java.util.List;
         }
         return saldo;
     }
+
+
+
 
         public List<transacao> getTransacaoList() {
             return transacaoList;

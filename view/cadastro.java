@@ -8,6 +8,7 @@ import java.io.IOException;
 import control.usuarioDAO;
 import model.usuario;
 
+
 public class cadastro extends JFrame{
     private JTextField campoUser;
     private JPasswordField campoSenha;
@@ -46,6 +47,7 @@ public class cadastro extends JFrame{
 
         // botao de cadastro
         botaoCadastro = new JButton("Cadastrar");
+        getRootPane().setDefaultButton(botaoCadastro);
         botaoCadastro.setBackground(new Color(46, 204, 113));
         botaoCadastro.setForeground(Color.WHITE);
         botaoCadastro.setFont(new Font("SansSerif", Font.BOLD, 14));

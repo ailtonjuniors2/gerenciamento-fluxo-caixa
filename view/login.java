@@ -53,6 +53,7 @@ public class login extends JFrame {
 
         //botao entrar
         botaoLogin = new JButton("Entrar");
+        getRootPane().setDefaultButton(botaoLogin);
         botaoLogin.setBackground(new Color(66, 133, 244));
         botaoLogin.setForeground(Color.WHITE);
         botaoLogin.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -89,7 +90,7 @@ public class login extends JFrame {
                     if (usuarioDAO.verificarLogin(login, senha)) {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
-                        // new GUI();
+                        new GUI();
 
                     } else {
                         JOptionPane.showMessageDialog(null, "Login ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);

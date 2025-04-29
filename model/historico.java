@@ -14,7 +14,7 @@ public class historico {
         transacoes.add(t);
     }
 
-    public List<transacao> getTransacaos() {
+    public List<transacao> getTransacoes() {
         return transacoes;
     }
 

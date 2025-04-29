@@ -10,7 +10,7 @@ public class transacao{
         this.tipo = tipo;
         this.descricao = descricao;
         this.valor = valor;
-        this.data = data;
+        this.data = LocalDate.now();
     }
 
     public String getTipo(){
@@ -33,7 +33,7 @@ public class transacao{
         return valor;
     }
 
-    public void setValor(int valor){
+    public void setValor(double valor){
         this.valor = valor;
     }
 
