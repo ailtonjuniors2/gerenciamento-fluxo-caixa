@@ -120,8 +120,31 @@ public class GUI extends JFrame{
         areahistorico.setEditable(false);
         docHistorico = areahistorico.getStyledDocument();
 
+        JButton botaoRefazer = new JButton("Desfazer");
+        botaoRefazer.setBackground(new Color(106, 106, 106));
+        botaoRefazer.setForeground(Color.WHITE);
+        botaoRefazer.setFont(new Font("SansSerif", Font.BOLD, 14));
+        botaoRefazer.setFocusPainted(false);
+        botaoRefazer.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        botaoRefazer.setMaximumSize(new Dimension(200, 40));
+        botaoRefazer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton botaoDesfazer = new JButton("Refazer");
+        botaoDesfazer.setBackground(new Color(0, 129, 6));
+        botaoDesfazer.setForeground(Color.WHITE);
+        botaoDesfazer.setFont(new Font("SansSerif", Font.BOLD, 14));
+        botaoDesfazer.setFocusPainted(false);
+        botaoDesfazer.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        botaoDesfazer.setMaximumSize(new Dimension(200, 40));
+        botaoDesfazer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel painelbotoeshistorico = new JPanel();
+        painelbotoeshistorico.add(botaoRefazer);
+        painelbotoeshistorico.add(botaoDesfazer);
+
         JScrollPane scroll = new JScrollPane(areahistorico);
         painelhistorico.add(scroll, BorderLayout.CENTER);
+        painelhistorico.add(painelbotoeshistorico, BorderLayout.SOUTH);
 
         abas.add("Entrada", painelentrada);
         abas.add("Saída", painelsaida);
@@ -163,6 +186,14 @@ public class GUI extends JFrame{
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Digite um valor válido.", "Erro", JOptionPane.ERROR_MESSAGE);}
                 camposaida.setText("");
+        });
+
+        botaoDesfazer.addActionListener(e -> {
+
+        });
+
+        botaoRefazer.addActionListener(e -> {
+
         });
 
         abas.addChangeListener(e -> {
