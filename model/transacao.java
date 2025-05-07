@@ -1,18 +1,18 @@
 package model;
 import java.time.LocalDate;
 
-public class transacao{
+public class transacao{  //criação do painel de transação
     private String tipo, descricao;
     private double valor;
     private LocalDate data;
 
-    public transacao(String tipo, String descricao, double valor){
+    public transacao(String tipo, String descricao, double valor){ //define o tipo a descrição, o valor e a data de transação
         this.tipo = tipo;
         this.descricao = descricao;
         this.valor = valor;
         this.data = LocalDate.now();
     }
-
+    //getters e setters dos modulos de transação
     public String getTipo(){
         return tipo;
     }

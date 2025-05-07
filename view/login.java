@@ -15,7 +15,7 @@ public class login extends JFrame {
     private JButton botaoLogin;
     private JButton botaoCadastro;
 
-    public login(){
+    public login(){ //painel inicial de login
         setTitle("Login - Fluxo de Caixa");
         setSize(400,250);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -83,14 +83,14 @@ public class login extends JFrame {
         botaoLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String login = campoLogin.getText();
+                String login = campoLogin.getText().trim(); //pega o texto e remove os espaços em branco
                 String senha = new String(campoSenha.getPassword());
 
-                if(login.isEmpty() || senha.isEmpty()){
+                if(login.isEmpty() || senha.isEmpty()){//verifica se os campos estão vazios
                     JOptionPane.showMessageDialog(null, "Preencha todos os campos corretamente!", "Erro", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                try {
+                try { //verifica se o login está correto
                     if (usuarioDAO.verificarLogin(login, senha)) {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         dispose();

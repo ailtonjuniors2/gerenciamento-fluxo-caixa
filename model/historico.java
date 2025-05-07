@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class historico {
+public class historico { //criação do historico
     private List<transacao> transacoes;
 
     public historico() {
@@ -18,7 +18,7 @@ public class historico {
         return transacoes;
     }
 
-    public void exibirHistorico () {
+    public void exibirHistorico () { //exibe ao usuario
         System.out.println("Historico de transações:");
         for (transacao t : transacoes) {
             System.out.println("Tipo: " + t.getTipo() + ", Descrição: " + t.getDescricao() + ", Valor: " + t.getValor() + ", Data: " + t.getData());

@@ -6,7 +6,7 @@ import java.util.List;
     public class fluxocaixa{
     private static List<transacao> transacaoList = new ArrayList<>();
 
-    public fluxocaixa(){
+    public fluxocaixa(){ //para existir o construtor
 
     }
 
@@ -24,7 +24,7 @@ import java.util.List;
             return 0.0;
         }
 
-        double saldo = 0.0;
+        double saldo = 0.0;//caso fosse nescessario fazer por linha de comando
         for (transacao t : transacaoList){
             if(t.getTipo().equalsIgnoreCase("entrada")){
                 saldo += t.getValor();

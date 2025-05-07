@@ -66,28 +66,28 @@ public class cadastro extends JFrame{
                 String user = campoUser.getText().trim(); //pega o texto e remove os espaços em branco
                 String senha = new String(campoSenha.getPassword()).trim();
 
-                if(user.isEmpty() || senha.isEmpty()){
+                if(user.isEmpty() || senha.isEmpty()){ //verifica se os campos estão vazios
                     JOptionPane.showMessageDialog(this, "Preencha todos os campos corretamente!", "Erro", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                usuario us = new usuario(user, senha);
+                usuario us = new usuario(user, senha); //novo usuario
 
                 try{
-                    if (usuarioDAO.verificarUsuarioCadastrado(user)) {
+                    if (usuarioDAO.verificarUsuarioCadastrado(user)) { //verifica se o usuario já existe e não aceita
                         JOptionPane.showMessageDialog(this, "Usuário já cadastrado, tente novamente.", "Aviso", JOptionPane.WARNING_MESSAGE);
                     } else {
-                        usuarioDAO.salvarUsuario(us);
+                        usuarioDAO.salvarUsuario(us); //se não exixtir, ele aceita
                         JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
                     }
 
 
-            }catch (IOException ex){
+            }catch (IOException ex){ //verificar se tem um erro de I/O e mostrar no console
                     JOptionPane.showMessageDialog(this, "Erro ao cadastrar o usuário: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE) ;
                 }
         });
-        add(painel);
+        add(painel); //faz o painel visivel
         setVisible(true);
     }
 

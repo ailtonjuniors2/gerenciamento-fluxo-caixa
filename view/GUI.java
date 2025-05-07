@@ -26,7 +26,7 @@ public class GUI extends JFrame{
     private StyledDocument docHistorico;
 
 
-    public GUI(){
+    public GUI(){ //cria o painel geral
         setTitle("Sistema de Fluxo de Caixa");
         setSize(500, 300);
         setLocationRelativeTo(null);
@@ -68,7 +68,7 @@ public class GUI extends JFrame{
         painelentrada.add(botaoAdicionarEntrada);
 
 
-        // aba saida
+        // painel de saida
         JPanel painelsaida = new JPanel();
         painelsaida.setLayout(new BoxLayout(painelsaida,BoxLayout.Y_AXIS));
         painelsaida.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -100,7 +100,7 @@ public class GUI extends JFrame{
         painelsaida.add(botaoAdicionarSaida);
 
 
-        //painel saldo
+        //painel de saldo
         JPanel painelsaldo = new JPanel();
         painelsaldo.setLayout(new BoxLayout(painelsaldo, BoxLayout.Y_AXIS));
         painelsaldo.setBorder(new EmptyBorder(30, 30, 30, 30));
@@ -152,7 +152,7 @@ public class GUI extends JFrame{
         abas.add("Histórico", painelhistorico);
 
         botaoAdicionarEntrada.addActionListener(e ->{
-            try{
+            try{ //faz com que no painel de entrada atualize o saldo e o historico
                 double valor = Double.parseDouble(campoentrada.getText());
                 if (valor <= 0) throw new NumberFormatException();
                 transacao t = new transacao("entrada", "Valor adicionado manualmente", valor);
@@ -171,7 +171,7 @@ public class GUI extends JFrame{
 
         });
         botaoAdicionarSaida.addActionListener(e -> {
-            try {
+            try { //faz com que no painel de saida atualize o saldo e o historico
                 double valor = Double.parseDouble(camposaida.getText());
                 if (valor <= 0) throw new NumberFormatException();
                 transacao t = new transacao("saida", "Valor removido manualmente", valor);
@@ -183,7 +183,7 @@ public class GUI extends JFrame{
 
                 camposaida.setText("");
 
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException ex) { //mostra um erro de I/O para o usuario
                 JOptionPane.showMessageDialog(this, "Digite um valor válido.", "Erro", JOptionPane.ERROR_MESSAGE);}
                 camposaida.setText("");
         });
