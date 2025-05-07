@@ -37,7 +37,7 @@ public class usuarioDAO {
     public static boolean verificarUsuarioCadastrado(String user) throws IOException{
         List<usuario> usuarios = carregarUsuarios();
         for (usuario users : usuarios) {
-            if (users.getUsuario().equalsIgnoreCase(user)) {
+            if (users.getUsuario().equals(user)) {
                 return true;
             }
         }
@@ -46,7 +46,7 @@ public class usuarioDAO {
     public static boolean verificarLogin(String user, String senha) throws IOException {
         List<usuario> usuarios = carregarUsuarios();
         for (usuario users : usuarios) {
-            if (users.getUsuario().equalsIgnoreCase(user) && users.getSenha().equals(senha)) {
+            if (users.getUsuario().equals(user) && users.getSenha().equals(senha)) {
                 return true;
             }
         }
