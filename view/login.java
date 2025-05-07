@@ -86,6 +86,10 @@ public class login extends JFrame {
                 String login = campoLogin.getText();
                 String senha = new String(campoSenha.getPassword());
 
+                if(login.isEmpty() || senha.isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Preencha todos os campos corretamente!", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 try {
                     if (usuarioDAO.verificarLogin(login, senha)) {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
