@@ -52,4 +52,14 @@ public class usuarioDAO {//para criar o txt dos usuarios
         }
         return false;
     }
+
+    public static usuario buscarUsuario(String user) throws IOException{
+        List<usuario> usuarios = carregarUsuarios();
+        for (usuario users : usuarios){
+            if (users.getUsuario().equals(user)){
+                return users;
+            }
+        }
+        return null;
+    }
 }

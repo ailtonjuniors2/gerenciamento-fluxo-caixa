@@ -1,38 +1,42 @@
 package model;
 
-import java.io.*;
 import java.util.Stack;
-import java.util.List;
-import java.time.LocalDate;
 
-public class historico { //criação do historico
-    private List<transacao> transacoes;
+public class historico {
+    private Stack<transacao> transacoes;
+    private Stack<transacao> transacoesDesfeitas;
 
     public historico() {
-        this.transacoes = new ArrayList<>();
+        this.transacoes = new Stack<>();
+        this.transacoesDesfeitas = new Stack<>();
     }
 
-    public void adicionarTransacao(transacao t) { //adiciona transação
+    public void adicionarTransacao(transacao t) {
         transacoes.push(t);
+        transacoesDesfeitas.clear();
     }
 
-    public Stack<transacao> getTransacoes() { // pega a transação
+    public Stack<transacao> getTransacoes() {
         return transacoes;
     }
 
-    public void exibirHistorico() { //exibe ao usuario
-        System.out.println("Historico de transações:");
-        for (transacao t : transacoes) {
-            System.out.println("Tipo: " + t.getTipo() + ", Descrição: " + t.getDescricao() + ", Valor: " + t.getValor() + ", Data: " + t.getData());
+    public void desfazerTransacao() {
+        if (!transacoes.isEmpty()) {
+            transacao removida = transacoes.pop();
+            transacoesDesfeitas.push(removida);
+            System.out.println("Transação desfeita: " + removida.getDescricao());
+        } else {
+            System.out.println("Nenhuma transação para desfazer.");
         }
     }
 
-    public void removerTransacao() {
-        if (!transacoes.isEmpty()) {
-            transacao removida = transacoes.pop();
-            System.out.println("Transação desfeita: " + removida.getDescricao());
-                } else {
-                    System.out.println("Nenhuma transação para desfazer.");
-                }
-            }
+    public void refazerTransacao() {
+        if (!transacoesDesfeitas.isEmpty()) {
+            transacao refeita = transacoesDesfeitas.pop();
+            transacoes.push(refeita);
+            System.out.println("Transação refeita: " + refeita.getDescricao());
+        } else {
+            System.out.println("Nenhuma transação para refazer.");
         }
+    }
+}

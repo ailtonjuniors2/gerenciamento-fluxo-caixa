@@ -1,6 +1,7 @@
 package view;
 
 import control.usuarioDAO;
+import model.usuario;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,14 +92,15 @@ public class login extends JFrame {
                     return;
                 }
                 try { //verifica se o login está correto
-                    if (usuarioDAO.verificarLogin(login, senha)) {
+                    usuario usuarioAutenticado = usuarioDAO.buscarUsuario(login);
+                    if (usuarioAutenticado != null) {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
-                        new GUI();
-
+                        new GUI(usuarioAutenticado);
                     } else {
                         JOptionPane.showMessageDialog(null, "Login ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
                     }
+
                 } catch (IOException ex){
                     JOptionPane.showMessageDialog(null, "Erro ao acessar o sistema: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                 }

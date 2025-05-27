@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Stack;
 
+import control.historicoDAO;
 import control.usuarioDAO;
 import model.historico;
 import model.transacao;
@@ -19,6 +21,7 @@ import model.usuario;
 import model.fluxocaixa;
 
 public class GUI extends JFrame{
+    private usuario usuarioLogado;
     private ArrayList<Double> transacoes = new ArrayList<>();
     private JLabel labelSaldo;
     private historico historicoTransacoes = new historico();
@@ -26,7 +29,21 @@ public class GUI extends JFrame{
     private StyledDocument docHistorico;
 
 
-    public GUI(){ //cria o painel geral
+    public GUI(usuario usuarioLogado) {
+        this.usuarioLogado = usuarioLogado;
+        try {
+            Stack<transacao> transacoesSalvas = historicoDAO.carregarHistorico(usuarioLogado.getUsuario());
+
+            for (transacao t : transacoesSalvas) {
+                historicoTransacoes.adicionarTransacao(t);
+            }
+
+            atualizarFluxoCaixa();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //cria o painel geral
         setTitle("Sistema de Fluxo de Caixa");
         setSize(500, 300);
         setLocationRelativeTo(null);
@@ -120,7 +137,7 @@ public class GUI extends JFrame{
         areahistorico.setEditable(false);
         docHistorico = areahistorico.getStyledDocument();
 
-        JButton botaoRefazer = new JButton("Desfazer");
+        JButton botaoRefazer = new JButton("Refazer");
         botaoRefazer.setBackground(new Color(106, 106, 106));
         botaoRefazer.setForeground(Color.WHITE);
         botaoRefazer.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -129,7 +146,7 @@ public class GUI extends JFrame{
         botaoRefazer.setMaximumSize(new Dimension(200, 40));
         botaoRefazer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton botaoDesfazer = new JButton("Refazer");
+        JButton botaoDesfazer = new JButton("Desfazer");
         botaoDesfazer.setBackground(new Color(0, 129, 6));
         botaoDesfazer.setForeground(Color.WHITE);
         botaoDesfazer.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -185,16 +202,37 @@ public class GUI extends JFrame{
 
             } catch (NumberFormatException ex) { //mostra um erro de I/O para o usuario
                 JOptionPane.showMessageDialog(this, "Digite um valor válido.", "Erro", JOptionPane.ERROR_MESSAGE);}
-                camposaida.setText("");
+            camposaida.setText("");
         });
 
         botaoDesfazer.addActionListener(e -> {
+            historicoTransacoes.desfazerTransacao();
+            atualizarFluxoCaixa();
 
+            try {
+                historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
+                JOptionPane.showMessageDialog(this, "Transação desfeita com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            atualizarHistorico();
+            atualizarSaldo();
         });
+
 
         botaoRefazer.addActionListener(e -> {
+            historicoTransacoes.refazerTransacao();
+            atualizarFluxoCaixa();
 
+            try {
+                historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            atualizarHistorico();
+            atualizarSaldo();
         });
+
 
         abas.addChangeListener(e -> {
             int abaSelecionada = abas.getSelectedIndex();
@@ -209,6 +247,9 @@ public class GUI extends JFrame{
         });
         add(abas);
         setVisible(true);
+
+        atualizarHistorico();
+        atualizarSaldo();
     }
     public void atualizarSaldo(){
         double saldo = fluxocaixa.calcularsaldo();
@@ -256,4 +297,12 @@ public class GUI extends JFrame{
 
         }
     }
+    private void atualizarFluxoCaixa() {
+        fluxocaixa.getTransacaoList().clear();
+
+        for (transacao t : historicoTransacoes.getTransacoes()) {
+            fluxocaixa.adicionartransacao(t);
+        }
+    }
+
 }

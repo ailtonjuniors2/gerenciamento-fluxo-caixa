@@ -36,10 +36,8 @@ import java.util.List;
         return saldo;
     }
 
-
-
-
-        public List<transacao> getTransacaoList() {
+        public static List<transacao> getTransacaoList() {
             return transacaoList;
         }
+
     }
