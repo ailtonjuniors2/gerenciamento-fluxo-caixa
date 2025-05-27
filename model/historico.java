@@ -1,7 +1,7 @@
 package model;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Stack;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -13,7 +13,7 @@ public class historico { //criação do historico
     }
 
     public void adicionarTransacao(transacao t) {
-        transacoes.add(t);
+        transacoes.push(t);
     }
 
     public List<transacao> getTransacoes() {
