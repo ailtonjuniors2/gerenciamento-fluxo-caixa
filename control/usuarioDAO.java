@@ -8,7 +8,7 @@ import java.util.List;
 public class usuarioDAO {//para criar o txt dos usuarios
     private static final String ARQUIVO = "data/usuarios.txt";
 
-    public static void salvarUsuario(usuario user) throws IOException {
+    public static void salvarUsuario(usuario user) throws IOException { //para salvar o usuario a partir de um txt
         BufferedWriter bw = new BufferedWriter(new FileWriter(ARQUIVO, true));
         bw.write(user.toCSV());
         bw.newLine();
