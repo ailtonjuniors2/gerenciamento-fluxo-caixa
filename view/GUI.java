@@ -6,27 +6,24 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Stack;
 
 import control.historicoDAO;
-import control.usuarioDAO;
 import model.historico;
 import model.transacao;
 import model.usuario;
-import model.fluxocaixa;
+import control.saldoDAO;
 
 public class GUI extends JFrame{
     private usuario usuarioLogado;
-    private ArrayList<Double> transacoes = new ArrayList<>();
     private JLabel labelSaldo;
     private historico historicoTransacoes = new historico();
     private JTextPane areahistorico;
     private StyledDocument docHistorico;
+    private double saldoAtual = 0.0;
+
 
 
     public GUI(usuario usuarioLogado) {
@@ -38,8 +35,12 @@ public class GUI extends JFrame{
                 historicoTransacoes.adicionarTransacao(t);
             }
 
-            atualizarFluxoCaixa();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            saldoAtual = saldoDAO.carregarSaldo(usuarioLogado.getUsuario());
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -138,7 +139,7 @@ public class GUI extends JFrame{
         docHistorico = areahistorico.getStyledDocument();
 
         JButton botaoRefazer = new JButton("Refazer");
-        botaoRefazer.setBackground(new Color(106, 106, 106));
+        botaoRefazer.setBackground(new Color(0, 129, 6));
         botaoRefazer.setForeground(Color.WHITE);
         botaoRefazer.setFont(new Font("SansSerif", Font.BOLD, 14));
         botaoRefazer.setFocusPainted(false);
@@ -147,7 +148,7 @@ public class GUI extends JFrame{
         botaoRefazer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton botaoDesfazer = new JButton("Desfazer");
-        botaoDesfazer.setBackground(new Color(0, 129, 6));
+        botaoDesfazer.setBackground(new Color(139,0,0));
         botaoDesfazer.setForeground(Color.WHITE);
         botaoDesfazer.setFont(new Font("SansSerif", Font.BOLD, 14));
         botaoDesfazer.setFocusPainted(false);
@@ -174,10 +175,16 @@ public class GUI extends JFrame{
                 if (valor <= 0) throw new NumberFormatException();
                 transacao t = new transacao("entrada", "Valor adicionado manualmente", valor);
                 historicoTransacoes.adicionarTransacao(t);
-                fluxocaixa.adicionartransacao(t);
-
-                atualizarSaldo();
+                saldoAtual += valor;
                 atualizarHistorico();
+                atualizarSaldo();
+
+                try{
+                    saldoDAO.salvarSaldo(usuarioLogado.getUsuario(), saldoAtual);
+                    historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
+                } catch (Exception ex){
+                    ex.printStackTrace();
+                }
 
                 campoentrada.setText("");
 
@@ -192,11 +199,17 @@ public class GUI extends JFrame{
                 double valor = Double.parseDouble(camposaida.getText());
                 if (valor <= 0) throw new NumberFormatException();
                 transacao t = new transacao("saida", "Valor removido manualmente", valor);
-                fluxocaixa.adicionartransacao(t);
                 historicoTransacoes.adicionarTransacao(t);
-
+                saldoAtual -= valor;
                 atualizarHistorico();
                 atualizarSaldo();
+
+                try{
+                    saldoDAO.salvarSaldo(usuarioLogado.getUsuario(), saldoAtual);
+                    historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
+                } catch (Exception ex){
+                    ex.printStackTrace();
+                }
 
                 camposaida.setText("");
 
@@ -206,31 +219,49 @@ public class GUI extends JFrame{
         });
 
         botaoDesfazer.addActionListener(e -> {
-            historicoTransacoes.desfazerTransacao();
-            atualizarFluxoCaixa();
+            transacao desfeita = historicoTransacoes.desfazerTransacao();
+            if (desfeita != null){
+                if (desfeita.getTipo().equals("entrada")) {
+                    saldoAtual -= desfeita.getValor();
+                } else {
+                    saldoAtual += desfeita.getValor(); // já está certo aqui
+                }
 
-            try {
-                historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
-                JOptionPane.showMessageDialog(this, "Transação desfeita com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                try {
+                    saldoDAO.salvarSaldo(usuarioLogado.getUsuario(), saldoAtual);
+                    historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
+                    atualizarSaldo();
+                    atualizarHistorico();
+                    JOptionPane.showMessageDialog(this, "Transação desfeita com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Não há transações para desfazer.","Aviso", JOptionPane.WARNING_MESSAGE);
             }
-            atualizarHistorico();
-            atualizarSaldo();
         });
 
 
         botaoRefazer.addActionListener(e -> {
-            historicoTransacoes.refazerTransacao();
-            atualizarFluxoCaixa();
+            transacao refeita = historicoTransacoes.refazerTransacao();
+            if (refeita != null){
+                if (refeita.getTipo().equals("entrada")) {
+                    saldoAtual += refeita.getValor();
+                } else {
+                    saldoAtual -= refeita.getValor(); // CORRIGIDO: subtrai se for saída
+                }
 
-            try {
-                historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            atualizarHistorico();
-            atualizarSaldo();
+                try {
+                    saldoDAO.salvarSaldo(usuarioLogado.getUsuario(), saldoAtual);
+                    historicoDAO.salvarHistorico(usuarioLogado.getUsuario(), historicoTransacoes.getTransacoes());
+                    atualizarSaldo();
+                    atualizarHistorico();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+            JOptionPane.showMessageDialog(this, "Não há transações para refazer.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
         });
 
 
@@ -252,12 +283,11 @@ public class GUI extends JFrame{
         atualizarSaldo();
     }
     public void atualizarSaldo(){
-        double saldo = fluxocaixa.calcularsaldo();
-        labelSaldo.setText(String.format("Saldo atual: R$%.2f", saldo));
+        labelSaldo.setText(String.format("Saldo atual: R$%.2f", saldoAtual));
 
-        if (saldo > 0){
+        if (saldoAtual > 0){
             labelSaldo.setForeground(new Color(0,128,0));
-        } else if (saldo < 0){
+        } else if (saldoAtual < 0){
             labelSaldo.setForeground(new Color(139,0,0));
         } else {
             labelSaldo.setForeground(null);
@@ -295,13 +325,6 @@ public class GUI extends JFrame{
                 e.printStackTrace();
             }
 
-        }
-    }
-    private void atualizarFluxoCaixa() {
-        fluxocaixa.getTransacaoList().clear();
-
-        for (transacao t : historicoTransacoes.getTransacoes()) {
-            fluxocaixa.adicionartransacao(t);
         }
     }
 

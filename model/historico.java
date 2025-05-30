@@ -20,23 +20,27 @@ public class historico {
         return transacoes;
     }
 
-    public void desfazerTransacao() {
+    public transacao desfazerTransacao() {
         if (!transacoes.isEmpty()) {
             transacao removida = transacoes.pop();
             transacoesDesfeitas.push(removida);
             System.out.println("Transação desfeita: " + removida.getDescricao());
+            return removida;
         } else {
             System.out.println("Nenhuma transação para desfazer.");
         }
+        return null;
     }
 
-    public void refazerTransacao() {
+    public transacao refazerTransacao() {
         if (!transacoesDesfeitas.isEmpty()) {
             transacao refeita = transacoesDesfeitas.pop();
             transacoes.push(refeita);
             System.out.println("Transação refeita: " + refeita.getDescricao());
+            return refeita;
         } else {
             System.out.println("Nenhuma transação para refazer.");
         }
+        return null;
     }
 }
