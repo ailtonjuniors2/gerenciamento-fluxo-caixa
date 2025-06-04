@@ -156,18 +156,33 @@ public class GUI extends JFrame{
         botaoDesfazer.setMaximumSize(new Dimension(200, 40));
         botaoDesfazer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JButton botaoDownload = new JButton("Download");
+        botaoDownload.setBackground(Color.BLUE);
+        botaoDownload.setForeground(Color.WHITE);
+        botaoDownload.setFont(new Font("SansSerif", Font.BOLD, 14));
+        botaoDownload.setFocusPainted(false);
+        botaoDownload.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        botaoDownload.setMaximumSize(new Dimension(200, 40));
+        botaoDownload.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         JPanel painelbotoeshistorico = new JPanel();
         painelbotoeshistorico.add(botaoRefazer);
         painelbotoeshistorico.add(botaoDesfazer);
+        painelbotoeshistorico.add(botaoDownload);
 
         JScrollPane scroll = new JScrollPane(areahistorico);
         painelhistorico.add(scroll, BorderLayout.CENTER);
         painelhistorico.add(painelbotoeshistorico, BorderLayout.SOUTH);
 
+
         abas.add("Entrada", painelentrada);
         abas.add("Saída", painelsaida);
         abas.add("Saldo", painelsaldo);
         abas.add("Histórico", painelhistorico);
+
+        botaoDownload.addActionListener( e -> {
+            return;
+        });
 
         botaoAdicionarEntrada.addActionListener(e ->{
             try{ //faz com que no painel de entrada atualize o saldo e o historico
@@ -326,6 +341,9 @@ public class GUI extends JFrame{
             }
 
         }
+    }
+    public void gerarArquivoDownload(){
+
     }
 
 }
