@@ -346,7 +346,7 @@ public class GUI extends JFrame{
         }
     }
     public void gerarArquivoDownload(){
-        ist<transacao> transacoes = historicoTransacoes.getTransacoes();
+        List<transacao> transacoes = historicoTransacoes.getTransacoes();
         if (transacoes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nenhuma transação para exportar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
