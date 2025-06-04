@@ -6,8 +6,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Stack;
 
 import control.historicoDAO;
@@ -317,8 +320,7 @@ public class GUI extends JFrame{
             String texto = "[" + t.getData().format(dtf) + "] "
                     + t.getTipo() + " - "
                     + t.getDescricao() + ": R$ "
-                    + String.format("%.2f", t.getValor()) + "\n";
-
+                    + String.format("%.2f", t.getValor());
 
             texto += "-----------------------------------\n";
 
@@ -343,7 +345,31 @@ public class GUI extends JFrame{
         }
     }
     public void gerarArquivoDownload(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        StringBuilder sb = new StringBuilder();
 
+        sb.append("Data, tipo, descrição, valor\n");
+
+        for (transacao t : historicoTransacoes.getTransacoes()) {
+            sb.append(t.getData().format(dtf)).append(",")
+                    .append(t.getTipo()).append(",")
+                    .append(t.getDescricao()).append(",")
+                    .append(String.valueOf(t.getValor()))
+                    .append("\n");
+        }
+        JFileChooser jfc = new JFileChooser();
+        jfc.setDialogTitle("Baixando o historico");
+        int userSelection = jfc.showOpenDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File filetoSave = jfc.getSelectedFile();
+
+            try (FileWriter writer = new FileWriter(filetoSave)) {
+                writer.write(sb.toString());
+                JOptionPane.showMessageDialog(this, "Histórico salvo com sucesso!");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
-
 }
