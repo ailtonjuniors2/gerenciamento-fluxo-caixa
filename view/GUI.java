@@ -6,10 +6,13 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Stack;
-
+import java.util.List;
 import control.historicoDAO;
 import model.historico;
 import model.transacao;
@@ -181,7 +184,7 @@ public class GUI extends JFrame{
         abas.add("Histórico", painelhistorico);
 
         botaoDownload.addActionListener( e -> {
-            return;
+            gerarArquivoDownload();
         });
 
         botaoAdicionarEntrada.addActionListener(e ->{
@@ -343,7 +346,38 @@ public class GUI extends JFrame{
         }
     }
     public void gerarArquivoDownload(){
+        List<transacao> transacoes = historicoTransacoes.getTransacoes();
+        if (transacoes.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhuma transação para exportar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Histórico de transações");
+        sb.append("\n");
 
+        for (transacao t : transacoes){
+            sb.append("Tipo: ").append(t.getTipo()).append("\n")
+                    .append("Descrição: ").append(t.getDescricao()).append("\n")
+                    .append("Data: ").append(t.getData()).append("\n")
+                    .append("Valor: R$").append(t.getValor()).append("\n").append("\n");
+        }
+
+        try {
+            JFileChooser jfc = new JFileChooser();
+            jfc.setDialogTitle("Salvar Transações");
+            jfc.setSelectedFile(new File(usuarioLogado.getUsuario() + ".txt"));
+            int userselection = jfc.showSaveDialog(this);
+
+            if (userselection == jfc.APPROVE_OPTION){
+                File arquivo = jfc.getSelectedFile();
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivo))){
+                    bw.write(sb.toString());
+                    JOptionPane.showMessageDialog(this, "Arquivo salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (IOException ex){
+            JOptionPane.showMessageDialog(this, "Erro ao salvar arquivo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }
