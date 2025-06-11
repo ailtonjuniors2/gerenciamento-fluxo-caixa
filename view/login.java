@@ -93,7 +93,8 @@ public class login extends JFrame {
                 }
                 try { //verifica se o login está correto
                     usuario usuarioAutenticado = usuarioDAO.buscarUsuario(login);
-                    if (usuarioAutenticado != null) {
+                    boolean usuarioNovo = usuarioDAO.verificarLogin(login, senha);
+                    if (usuarioAutenticado != null && usuarioNovo) {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
                         new GUI(usuarioAutenticado);

@@ -1,0 +1,3 @@
+entrada|Valor adicionado manualmente|1000.0|2025-06-04
+entrada|Valor adicionado manualmente|422.0|2025-06-04
+saida|Valor removido manualmente|245.0|2025-06-04
